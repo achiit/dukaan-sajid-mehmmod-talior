@@ -1,0 +1,398 @@
+```html
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sajid Mehmmod Tailor & Uniforms</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            800: '#0B192C',
+                            900: '#1E3A8A',
+                            950: '#0F172A',
+                        },
+                        gold: {
+                            400: '#FACC15',
+                            500: '#EAB308',
+                            600: '#CA8A04',
+                            700: '#A16207',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        urdu: ['Noto Nastaliq Urdu', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .urdu-text {
+            font-family: 'Noto Nastaliq Urdu', serif;
+            line-height: 2.2;
+        }
+        /* Custom scrollbar for mobile screen preview */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="h-full flex items-center justify-center bg-slate-900 font-sans antialiased sm:p-4">
+
+    <!-- Mobile Screen Container Simulation -->
+    <div class="w-full max-w-md h-full sm:h-[90vh] bg-slate-50 flex flex-col sm:rounded-3xl shadow-2xl border-0 sm:border-8 border-slate-800 overflow-hidden relative">
+
+        <!-- Top App Bar -->
+        <header class="bg-navy-900 text-white px-4 py-3 flex items-center justify-between shadow-md relative z-20">
+            <div class="flex items-center space-x-3 rtl:space-x-reverse">
+                <div class="bg-gold-500 text-navy-900 p-2 rounded-full w-10 h-10 flex items-center justify-center font-bold shadow-inner">
+                    <i class="fa-solid font-bold fa-scissors text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-base font-bold leading-tight tracking-wide text-gold-400" id="header-app-title">
+                        Sajid Mehmmod Tailor
+                    </h1>
+                    <p class="text-xs text-slate-300" id="header-sub-title">School Uniforms & Custom Stitching</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2 rtl:space-x-reverse">
+                <button onclick="toggleLanguage()" class="bg-navy-800 border border-gold-500/40 text-gold-400 px-2.5 py-1 rounded-full text-xs font-semibold hover:bg-gold-500 hover:text-navy-900 transition-colors shadow-sm flex items-center gap-1">
+                    <i class="fa-solid fa-language text-sm"></i>
+                    <span id="lang-btn-text">اردو</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Role Switcher Banner -->
+        <div class="bg-navy-950 text-slate-300 px-4 py-2 flex items-center justify-between text-xs border-b border-navy-800">
+            <span class="flex items-center gap-1.5 font-medium">
+                <i class="fa-solid fa-user-gear text-gold-400"></i>
+                <span id="mode-label">Mode:</span> 
+                <strong id="current-role-display" class="text-gold-400">Customer Mode</strong>
+            </span>
+            <button onclick="switchRoleModal()" class="text-xs text-gold-400 hover:underline font-semibold bg-navy-800 px-2.5 py-1 rounded-md border border-slate-700">
+                <span id="switch-role-btn">Switch Interface</span>
+            </button>
+        </div>
+
+        <main class="flex-1 overflow-y-auto no-scrollbar p-4 space-y-4" id="main-content-area">
+            <!-- Content rendered dynamically via JS -->
+        </main>
+
+        <nav class="bg-navy-900 text-slate-300 border-t border-navy-800 grid grid-cols-4 py-2 px-1 text-center text-xs shadow-lg relative z-20">
+            <button onclick="navigateTo('home')" id="nav-home" class="flex flex-col items-center gap-1 text-gold-400 font-semibold py-1">
+                <i class="fa-solid fa-house text-base"></i>
+                <span id="nav-lbl-home">Home</span>
+            </button>
+            <button onclick="navigateTo('products')" id="nav-products" class="flex flex-col items-center gap-1 hover:text-gold-400 py-1 transition">
+                <i class="fa-solid fa-shirt text-base"></i>
+                <span id="nav-lbl-products">Products</span>
+            </button>
+            <button onclick="navigateTo('orders')" id="nav-orders" class="flex flex-col items-center gap-1 hover:text-gold-400 py-1 transition">
+                <i class="fa-solid fa-list-check text-base"></i>
+                <span id="nav-lbl-orders">Orders</span>
+            </button>
+            <button onclick="navigateTo('contact')" id="nav-contact" class="flex flex-col items-center gap-1 hover:text-gold-400 py-1 transition">
+                <i class="fa-solid fa-phone-volume text-base"></i>
+                <span id="nav-lbl-contact">Contact</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Modals Container -->
+    <div id="modal-container" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <!-- Dynamic modal content inserted here -->
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-navy-900 text-white border border-gold-500 px-4 py-2.5 rounded-xl shadow-2xl text-xs font-semibold opacity-0 transition-all duration-300 pointer-events-none z-50 flex items-center gap-2">
+        <i class="fa-solid fa-circle-check text-gold-400 text-sm"></i>
+        <span id="toast-message">Notification</span>
+    </div>
+
+    <script>
+        // Default State Initialization
+        let currentLang = 'en'; // 'en' or 'ur'
+        let currentRole = 'customer'; // 'customer' or 'owner'
+        let activeTab = 'home';
+        let currentUserPhone = '03001234567';
+
+        // Translations Data
+        const translations = {
+            en: {
+                appName: "Sajid Mehmmod Tailor",
+                subTitle: "School Uniforms & Tailoring",
+                langBtn: "اردو",
+                modeLabel: "Mode:",
+                customerMode: "Customer Interface",
+                ownerMode: "Shop Owner Interface",
+                switchRole: "Switch Mode",
+                home: "Home",
+                products: "Products",
+                orders: "My Orders",
+                contact: "Contact",
+                welcome: "Welcome to Sajid Mehmmod Tailor",
+                welcomeSub: "Premium stitching & high quality school uniforms for boys & girls.",
+                registerBtn: "Register / My Measurements",
+                newOrderBtn: "Place Custom Order",
+                dashboardTitle: "Tailor Shop Dashboard",
+                dailyOrders: "Today's Orders",
+                totalSales: "Total Sales",
+                pendingOrders: "Pending Stitching",
+                outstandingPay: "Outstanding Balance",
+                quickActions: "Quick Actions",
+                manageProducts: "Manage Products & Prices",
+                manageOrders: "All Customer Orders",
+                searchPlaceholder: "Search by Name or Mobile No...",
+                categories: "Categories",
+                all: "All",
+                schoolUniforms: "School Uniforms",
+                gentsTailoring: "Gents Stitching",
+                ladiesCustom: "Ladies Custom",
+                orderNow: "Order Now",
+                size: "Size",
+                fabric: "Fabric Type",
+                quantity: "Quantity",
+                deliveryDate: "Expected Delivery Date",
+                totalBill: "Total Bill (PKR)",
+                advancePay: "Advance Payment (PKR)",
+                balanceDue: "Remaining Balance",
+                submitOrder: "Confirm Order",
+                statusPending: "Pending",
+                statusProgress: "In Progress",
+                statusReady: "Ready for Pickup",
+                statusDelivered: "Delivered",
+                saveMeasurements: "Save Body Measurements",
+                callShop: "Call Shop Owner",
+                whatsappShop: "WhatsApp Support",
+                addressText: "Main Bazaar, Near City High School, Mirpur Khas",
+                buildInstTitle: "How to Build Android APK",
+            },
+            ur: {
+                appName: "ساجد محمود ٹیلر",
+                subTitle: "اسکول یونیفارم اور سلائی سینٹر",
+                langBtn: "English",
+                modeLabel: "موڈ:",
+                customerMode: "کسٹمر انٹرفیس",
+                ownerMode: "دکاندار انٹرفیس",
+                switchRole: "تبدیل کریں",
+                home: "ہوم",
+                products: "پروڈکٹس",
+                orders: "آرڈرز",
+                contact: "رابطہ کریں",
+                welcome: "ساجد محمود ٹیلرز میں خوش آمدید",
+                welcomeSub: "بہترین معیار کی سلائی اور اسکول یونیفارم کی تسلی بخش تیاری۔",
+                registerBtn: "رجسٹریشن / پیمائش کی تفصیل",
+                newOrderBtn: "نیا آرڈر دیں",
+                dashboardTitle: "دکان ڈیش بورڈ",
+                dailyOrders: "آج کے آرڈر",
+                totalSales: "کل سیل",
+                pendingOrders: "زیر التواء آرڈر",
+                outstandingPay: "بقایا جات",
+                quickActions: "اہم لنکس",
+                manageProducts: "پروڈکٹس اور قیمتیں",
+                manageOrders: "تمام کسٹمر آرڈرز",
+                searchPlaceholder: "نام یا فون نمبر سے تلاش کریں...",
+                categories: "کیٹیگریز",
+                all: "تمام",
+                schoolUniforms: "اسکول یونیفارم",
+                gentsTailoring: "مردانہ سلائی",
+                ladiesCustom: "زنانہ سلائی",
+                orderNow: "آرڈر کریں",
+                size: "سائز",
+                fabric: "کپڑے کی قسم",
+                quantity: "تعداد",
+                deliveryDate: "ترسیل کی تاریخ",
+                totalBill: "کل بل (روپے)",
+                advancePay: "ایڈوانس ادا شدہ",
+                balanceDue: "بقایا رقم",
+                submitOrder: "آرڈر کی تصدیق کریں",
+                statusPending: "زیر التواء",
+                statusProgress: "سلائی جاری ہے",
+                statusReady: "تیار ہے",
+                statusDelivered: "کامیابی سے ترسیل شدہ",
+                saveMeasurements: "پیمائش محفوظ کریں",
+                callShop: "کال کریں",
+                whatsappShop: "واٹس ایپ کریں",
+                addressText: "مین بازار، نزد سٹی ہائی اسکول، میرپورخاص",
+                buildInstTitle: "اینڈرائیڈ ایپ (APK) بنانے کا طریقہ",
+            }
+        };
+
+        // Initial Sample Data in LocalStorage
+        function initData() {
+            if (!localStorage.getItem('smt_products')) {
+                const initialProducts = [
+                    { id: 'p1', nameEn: 'Boys School Shirt & Pant', nameUr: 'بوائز اسکول شرٹ پینٹ', price: 1800, category: 'School Uniforms', icon: 'fa-user-graduate' },
+                    { id: 'p2', nameEn: 'Girls School Frock & Salwar', nameUr: 'گرلز اسکول فراک شلوار', price: 2000, category: 'School Uniforms', icon: 'fa-child-dress' },
+                    { id: 'p3', nameEn: 'Gents Shalwar Kameez Stitching', nameUr: 'مردانہ شلوار قمیض سلائی', price: 1200, category: 'Gents Stitching', icon: 'fa-user-tie' },
+                    { id: 'p4', nameEn: 'School Blazer / Coat', nameUr: 'اسکول بلیزر / کوٹ', price: 3500, category: 'School Uniforms', icon: 'fa-vest' },
+                    { id: 'p5', nameEn: 'Formal Cotton Shirt', nameUr: 'کاٹن کاٹن شرٹ سلائی', price: 900, category: 'Gents Stitching', icon: 'fa-shirt' },
+                    { id: 'p6', nameEn: 'Formal Dress Trousers', nameUr: 'فارمل ڈریس ٹراؤزر', price: 1000, category: 'Gents Stitching', icon: 'fa-socks' }
+                ];
+                localStorage.setItem('smt_products', JSON.stringify(initialProducts));
+            }
+
+            if (!localStorage.getItem('smt_customers')) {
+                const initialCustomers = [
+                    { name: 'Muhammad Ali', phone: '03001234567', address: 'House 45, St 3, Mirpur Khas', chest: '38', length: '40', waist: '32', shoulder: '17.5', arm: '24' },
+                    { name: 'Tariq Hussain', phone: '03129876543', address: 'Model Town, Mirpur Khas', chest: '40', length: '42', waist: '36', shoulder: '18.5', arm: '25' }
+                ];
+                localStorage.setItem('smt_customers', JSON.stringify(initialCustomers));
+            }
+
+            if (!localStorage.getItem('smt_orders')) {
+                const initialOrders = [
+                    {
+                        id: 'ORD-101',
+                        customerName: 'Muhammad Ali',
+                        phone: '03001234567',
+                        product: 'Boys School Shirt & Pant',
+                        size: 'Medium (38)',
+                        fabric: 'Cotton Polyester Blend',
+                        quantity: 2,
+                        totalBill: 3600,
+                        advance: 1500,
+                        balance: 2100,
+                        deliveryDate: '2026-10-28',
+                        status: 'In Progress',
+                        createdDate: '2026-10-20'
+                    },
+                    {
+                        id: 'ORD-102',
+                        customerName: 'Tariq Hussain',
+                        phone: '03129876543',
+                        product: 'Gents Shalwar Kameez Stitching',
+                        size: 'Large (42)',
+                        fabric: 'Boski',
+                        quantity: 1,
+                        totalBill: 1200,
+                        advance: 1200,
+                        balance: 0,
+                        deliveryDate: '2026-10-25',
+                        status: 'Ready',
+                        createdDate: '2026-10-18'
+                    }
+                ];
+                localStorage.setItem('smt_orders', JSON.stringify(initialOrders));
+            }
+        }
+
+        // Helpers
+        function getProducts() { return JSON.parse(localStorage.getItem('smt_products')) || []; }
+        function getCustomers() { return JSON.parse(localStorage.getItem('smt_customers')) || []; }
+        function getOrders() { return JSON.parse(localStorage.getItem('smt_orders')) || []; }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = msg;
+            toast.classList.remove('opacity-0');
+            setTimeout(() => { toast.classList.add('opacity-0'); }, 3000);
+        }
+
+        // Toggle Language
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'ur' : 'en';
+            document.documentElement.lang = currentLang;
+            document.getElementById('lang-btn-text').innerText = translations[currentLang].langBtn;
+            
+            if (currentLang === 'ur') {
+                document.body.classList.add('urdu-text');
+                document.body.setAttribute('dir', 'rtl');
+            } else {
+                document.body.classList.remove('urdu-text');
+                document.body.setAttribute('dir', 'ltr');
+            }
+            
+            updateStaticLabels();
+            renderContent();
+        }
+
+        function updateStaticLabels() {
+            const t = translations[currentLang];
+            document.getElementById('header-app-title').innerText = t.appName;
+            document.getElementById('header-sub-title').innerText = t.subTitle;
+            document.getElementById('mode-label').innerText = t.modeLabel;
+            document.getElementById('switch-role-btn').innerText = t.switchRole;
+            document.getElementById('current-role-display').innerText = currentRole === 'customer' ? t.customerMode : t.ownerMode;
+
+            document.getElementById('nav-lbl-home').innerText = t.home;
+            document.getElementById('nav-lbl-products').innerText = t.products;
+            document.getElementById('nav-lbl-orders').innerText = t.orders;
+            document.getElementById('nav-lbl-contact').innerText = t.contact;
+        }
+
+        // Navigation
+        function navigateTo(tab) {
+            activeTab = tab;
+            
+            // Highlight active nav tab
+            ['home', 'products', 'orders', 'contact'].forEach(t => {
+                const btn = document.getElementById(`nav-${t}`);
+                if (t === tab) {
+                    btn.className = "flex flex-col items-center gap-1 text-gold-400 font-bold py-1";
+                } else {
+                    btn.className = "flex flex-col items-center gap-1 text-slate-400 hover:text-gold-400 py-1 transition";
+                }
+            });
+
+            renderContent();
+        }
+
+        function switchRoleModal() {
+            const t = translations[currentLang];
+            const modal = document.getElementById('modal-container');
+            modal.innerHTML = `
+                <div class="bg-white rounded-2xl p-6 w-full max-w-xs shadow-xl border border-gold-500/30">
+                    <h3 class="text-lg font-bold text-navy-900 mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-user-shield text-gold-600"></i> ${t.switchRole}
+                    </h3>
+                    <p class="text-xs text-slate-600 mb-4">Select interface view to test features:</p>
+                    <div class="space-y-3">
+                        <button onclick="setRole('customer')" class="w-full py-2.5 px-4 rounded-xl font-semibold border flex items-center justify-between ${currentRole === 'customer' ? 'bg-navy-900 text-white border-navy-900' : 'bg-slate-100 text-slate-800 hover:bg-slate-200'}">
+                            <span><i class="fa-solid fa-user text-gold-500 mr-2"></i> ${t.customerMode}</span>
+                            ${currentRole === 'customer' ? '<i class="fa-solid fa-check text-gold-400"></i>' : ''}
+                        </button>
+                        <button onclick="setRole('owner')" class="w-full py-2.5 px-4 rounded-xl font-semibold border flex items-center justify-between ${currentRole === 'owner' ? 'bg-navy-900 text-white border-navy-900' : 'bg-slate-100 text-slate-800 hover:bg-slate-200'}">
+                            <span><i class="fa-solid fa-store text-gold-500 mr-2"></i> ${t.ownerMode}</span>
+                            ${currentRole === 'owner' ? '<i class="fa-solid fa-check text-gold-400"></i>' : ''}
+                        </button>
+                    </div>
+                    <button onclick="closeModal()" class="w-full mt-4 text-xs font-semibold text-slate-500 hover:underline text-center">Close</button>
+                </div>
+            `;
+            modal.classList.remove('hidden');
+        }
+
+        function setRole(role) {
+            currentRole = role;
+            closeModal();
+            updateStaticLabels();
+            showToast(`Switched to ${role === 'customer' ? 'Customer' : 'Owner'} Mode`);
+            renderContent();
+        }
+
+        function closeModal() {
+            document.getElementById('modal-container').classList.add('hidden');
+        }
+
+        function renderContent() {
+            const container = document.getElementById('main-content-area');
+            const t = translations[currentLang];
+
+            if (currentRole === 'owner' && activeTab === 'home') {
+                renderOwnerDashboard(container, t);
+                return;
